@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="theme-color" content="#0F0F1A"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Meus Gastos"/>
+<title>💜 Meus Gastos</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTWV1cyBHYXN0b3MiLCJzaG9ydF9uYW1lIjoiR2FzdG9zIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwRjBGMUEiLCJ0aGVtZV9jb2xvciI6IiMwRjBGMUEiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJyU+JTNDcmVjdCB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgcng9JzIwJyBmaWxsPSclMjM3QzNBRUQnLyUzRSUzQ3RleHQgeT0nLjllbScgZm9udC1zaXplPSc5MCcgdGV4dC1hbmNob3I9J21pZGRsZScgeD0nNTAlJyUzRSVGMCU5RiU5MiU5QyUzQy90ZXh0JTNFJTNDL3N2ZyUzRSIsInNpemVzIjoiYW55IiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV19"/>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #0F0F1A; color: #F1F0FF; min-height: 100vh; padding-bottom: 90px; }
+
+  .header { background: linear-gradient(135deg, #1A1040 0%, #0F0F1A 100%); padding: 52px 20px 20px; border-bottom: 1px solid #2A2050; }
+  .header-sub { font-size: 11px; color: #9B8EC4; letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 22px; font-weight: 700; color: #E8E4FF; margin-top: 4px; }
+
+  .card { margin: 16px; background: #1A1040; border-radius: 16px; padding: 20px; border: 1px solid #2A2050; }
+  .card-row { display: flex; justify-content: space-between; align-items: flex-start; }
+  .label-sm { font-size: 11px; color: #9B8EC4; text-transform: uppercase; letter-spacing: 1px; }
+  .amount-big { font-size: 30px; font-weight: 800; color: #E8E4FF; margin-top: 4px; }
+  .amount-med { font-size: 20px; font-weight: 700; margin-top: 4px; }
+  .progress-track { margin-top: 16px; background: #2A2050; border-radius: 8px; height: 8px; overflow: hidden; }
+  .progress-bar { height: 100%; border-radius: 8px; transition: width 0.5s ease; }
+  .progress-labels { display: flex; justify-content: space-between; margin-top: 6px; }
+  .text-xs { font-size: 11px; color: #9B8EC4; }
+
+  .tabs { display: flex; margin: 0 16px 0; background: #1A1040; border-radius: 12px; padding: 4px; border: 1px solid #2A2050; }
+  .tab { flex: 1; padding: 10px 4px; border: none; border-radius: 9px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; background: transparent; color: #9B8EC4; }
+  .tab.active { background: #7C3AED; color: #fff; }
+
+  .feedback { margin: 12px 16px 0; padding: 12px 16px; border-radius: 10px; font-size: 13px; }
+  .feedback.ok { background: #052E16; border: 1px solid #166534; color: #4ADE80; }
+  .feedback.err { background: #450A0A; border: 1px solid #991B1B; color: #FCA5A5; }
+
+  .section { padding: 16px; }
+  .block { background: #1A1040; border-radius: 14px; padding: 16px; border: 1px solid #2A2050; margin-bottom: 16px; }
+  .block-title { font-size: 13px; font-weight: 600; color: #C4B5FD; margin-bottom: 12px; }
+  textarea, input, select {
+    width: 100%; background: #0F0F1A; border: 1px solid #2A2050; border-radius: 10px;
+    padding: 11px 12px; color: #E8E4FF; font-size: 14px; outline: none;
+    font-family: inherit; margin-bottom: 8px; -webkit-appearance: none;
+  }
+  textarea { min-height: 90px; resize: none; }
+  select { appearance: none; }
+  .btn { width: 100%; padding: 13px; border-radius: 10px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+  .btn-purple { background: #7C3AED; color: #fff; }
+  .btn-blue { background: #2563EB; color: #fff; }
+  .btn-disabled { background: #2A2050; color: #6B7280; cursor: not-allowed; }
+
+  .cat-card { background: #1A1040; border-radius: 14px; padding: 14px; margin-bottom: 10px; border: 1px solid #2A2050; }
+  .cat-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .cat-name { font-size: 14px; font-weight: 600; }
+  .cat-val { font-size: 14px; font-weight: 700; }
+  .cat-track { background: #2A2050; border-radius: 6px; height: 6px; overflow: hidden; }
+  .cat-bar { height: 100%; border-radius: 6px; transition: width 0.5s; }
+
+  .gasto-item { background: #1A1040; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; border: 1px solid #2A2050; display: flex; align-items: center; gap: 12px; }
+  .gasto-icon { font-size: 24px; flex-shrink: 0; }
+  .gasto-info { flex: 1; }
+  .gasto-desc { font-size: 14px; font-weight: 600; color: #E8E4FF; }
+  .gasto-meta { font-size: 11px; color: #9B8EC4; margin-top: 2px; }
+  .gasto-right { text-align: right; }
+  .gasto-val { font-size: 15px; font-weight: 700; color: #C4B5FD; }
+  .btn-remove { background: none; border: none; color: #6B7280; cursor: pointer; font-size: 11px; padding: 0; margin-top: 2px; font-family: inherit; }
+
+  .empty { text-align: center; padding: 50px 20px; color: #9B8EC4; }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-text { font-size: 14px; }
+
+  .month-selector { display: flex; align-items: center; gap: 10px; margin: 12px 16px 0; }
+  .month-btn { background: #1A1040; border: 1px solid #2A2050; border-radius: 8px; color: #C4B5FD; padding: 6px 12px; cursor: pointer; font-size: 18px; }
+  .month-label { flex: 1; text-align: center; font-size: 14px; font-weight: 600; color: #E8E4FF; background: #1A1040; border: 1px solid #2A2050; border-radius: 8px; padding: 7px; }
+
+  .install-banner { margin: 12px 16px 0; background: linear-gradient(135deg, #1A1040, #2A1060); border-radius: 14px; padding: 14px 16px; border: 1px solid #7C3AED; display: flex; align-items: center; gap: 12px; }
+  .install-text { flex: 1; font-size: 12px; color: #C4B5FD; line-height: 1.4; }
+  .install-btn { background: #7C3AED; color: #fff; border: none; border-radius: 8px; padding: 8px 14px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; font-family: inherit; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-sub" id="headerSub">Agosto 2026</div>
+  <div class="header-title">💜 Meus Gastos</div>
+</div>
+
+<div id="installBanner" class="install-banner" style="display:none">
+  <div class="install-text">📲 Instale como app no seu celular para acesso rápido!</div>
+  <button class="install-btn" id="installBtn">Instalar</button>
+</div>
+
+<div class="month-selector">
+  <button class="month-btn" onclick="changeMonth(-1)">‹</button>
+  <div class="month-label" id="monthLabel">Agosto 2026</div>
+  <button class="month-btn" onclick="changeMonth(1)">›</button>
+</div>
+
+<div class="card" style="margin-top:16px">
+  <div class="card-row">
+    <div>
+      <div class="label-sm">Gasto este mês</div>
+      <div class="amount-big" id="totalGasto">R$ 0,00</div>
+    </div>
+    <div style="text-align:right">
+      <div class="label-sm">Saldo livre</div>
+      <div class="amount-med" id="saldoRestante">R$ 1.192,12</div>
+    </div>
+  </div>
+  <div class="progress-track">
+    <div class="progress-bar" id="progressBar" style="width:0%;background:#7C3AED"></div>
+  </div>
+  <div class="progress-labels">
+    <span class="text-xs" id="pctLabel">0% do limite variável</span>
+    <span class="text-xs" id="limiteLabel">Limite: R$ 1.192,12</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="setTab('registrar')" id="tab-registrar">📲 Registrar</button>
+  <button class="tab" onclick="setTab('resumo')" id="tab-resumo">📊 Resumo</button>
+  <button class="tab" onclick="setTab('historico')" id="tab-historico">📋 Histórico</button>
+</div>
+
+<div id="feedbackBox" style="display:none" class="feedback"></div>
+
+<div id="section-registrar" class="section">
+  <div class="block">
+    <div class="block-title">📲 Colar notificação do banco</div>
+    <textarea id="smsInput" placeholder="Cole aqui o SMS ou notificação do Bradesco/Nubank..."></textarea>
+    <button class="btn btn-purple" id="btnIA" onclick="analisarSMS()">Registrar com IA 🤖</button>
+  </div>
+  <div class="block">
+    <div class="block-title">✏️ Registrar manualmente</div>
+    <input type="text" id="mValor" placeholder="Valor (ex: 45,90)" inputmode="decimal"/>
+    <input type="text" id="mDesc" placeholder="Descrição (ex: iFood almoço)"/>
+    <select id="mCat">
+      <option value="uber">🚗 Uber / Transporte</option>
+      <option value="comida">🍔 Comida / Delivery</option>
+      <option value="beleza">💅 Beleza</option>
+      <option value="assinaturas">📱 Assinaturas</option>
+      <option value="lazer">🎬 Lazer / Saídas</option>
+      <option value="saude">💊 Saúde / Farmácia</option>
+      <option value="compras">🛍️ Compras / Roupas</option>
+      <option value="outros" selected>📦 Outros</option>
+    </select>
+    <button class="btn btn-blue" onclick="adicionarManual()">Adicionar gasto</button>
+  </div>
+</div>
+
+<div id="section-resumo" class="section" style="display:none">
+  <div id="resumoContent"><div class="empty"><div class="empty-icon">📊</div><div class="empty-text">Nenhum gasto registrado ainda.</div></div></div>
+</div>
+
+<div id="section-historico" class="section" style="display:none">
+  <div id="historicoContent"><div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Nenhum gasto ainda. Comece registrando!</div></div></div>
+</div>
+
+<script>
+const CATEGORIES = {
+  uber:        { label: "Uber / Transporte", icon: "🚗", color: "#7C3AED", budget: 400 },
+  comida:      { label: "Comida / Delivery",  icon: "🍔", color: "#DC2626", budget: 500 },
+  beleza:      { label: "Beleza",             icon: "💅", color: "#DB2777", budget: 150 },
+  assinaturas: { label: "Assinaturas",        icon: "📱", color: "#2563EB", budget: 214.58 },
+  lazer:       { label: "Lazer / Saídas",     icon: "🎬", color: "#D97706", budget: 200 },
+  saude:       { label: "Saúde / Farmácia",   icon: "💊", color: "#059669", budget: 150 },
+  compras:     { label: "Compras / Roupas",   icon: "🛍️", color: "#7C3AED", budget: 100 },
+  outros:      { label: "Outros",             icon: "📦", color: "#6B7280", budget: 200 },
+};
+
+const BUDGET_AGOSTO = 1192.12;
+const MONTHS = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+
+let currentYear = 2026;
+let currentMonth = 7; // 0-indexed, 7 = Agosto
+let gastos = {};
+let deferredPrompt = null;
+
+function storageKey() { return `gastos_${currentYear}_${currentMonth}`; }
+
+function loadGastos() {
+  try { gastos = JSON.parse(localStorage.getItem(storageKey()) || '{}'); } catch { gastos = {}; }
+}
+
+function saveGastos() {
+  try { localStorage.setItem(storageKey(), JSON.stringify(gastos)); } catch {}
+}
+
+function changeMonth(dir) {
+  currentMonth += dir;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
+  loadGastos();
+  updateAll();
+}
+
+function updateAll() {
+  const label = `${MONTHS[currentMonth]} ${currentYear}`;
+  document.getElementById('headerSub').textContent = label;
+  document.getElementById('monthLabel').textContent = label;
+  const lista = Object.values(gastos);
+  const total = lista.reduce((s, g) => s + g.valor, 0);
+  const saldo = BUDGET_AGOSTO - total;
+  const pct = Math.min((total / BUDGET_AGOSTO) * 100, 100);
+  const cor = saldo < 0 ? '#DC2626' : saldo < 300 ? '#D97706' : '#059669';
+  const barCor = pct > 90 ? '#DC2626' : pct > 70 ? '#D97706' : '#7C3AED';
+  document.getElementById('totalGasto').textContent = 'R$ ' + fmt(total);
+  document.getElementById('saldoRestante').textContent = 'R$ ' + fmt(saldo);
+  document.getElementById('saldoRestante').style.color = cor;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressBar').style.background = barCor;
+  document.getElementById('pctLabel').textContent = pct.toFixed(0) + '% do limite variável';
+  renderResumo(lista);
+  renderHistorico(lista);
+}
+
+function fmt(v) { return v.toFixed(2).replace('.', ','); }
+
+function renderResumo(lista) {
+  const box = document.getElementById('resumoContent');
+  if (!lista.length) { box.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">Nenhum gasto registrado ainda.</div></div>'; return; }
+  const totCat = {};
+  lista.forEach(g => { totCat[g.categoria] = (totCat[g.categoria] || 0) + g.valor; });
+  const sorted = Object.entries(totCat).sort((a,b) => b[1]-a[1]);
+  box.innerHTML = sorted.map(([cat, total]) => {
+    const c = CATEGORIES[cat] || CATEGORIES.outros;
+    const budget = c.budget;
+    const pct = Math.min((total / budget) * 100, 100);
+    const cor = pct > 90 ? '#DC2626' : pct > 70 ? '#D97706' : c.color;
+    return `<div class="cat-card">
+      <div class="cat-row"><span class="cat-name">${c.icon} ${c.label}</span><span class="cat-val" style="color:${cor}">R$ ${fmt(total)}</span></div>
+      <div class="cat-track"><div class="cat-bar" style="width:${pct}%;background:${cor}"></div></div>
+      <div class="progress-labels"><span class="text-xs">${pct.toFixed(0)}% do limite</span><span class="text-xs">Limite: R$ ${fmt(budget)}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function renderHistorico(lista) {
+  const box = document.getElementById('historicoContent');
+  if (!lista.length) { box.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Nenhum gasto ainda. Comece registrando!</div></div>'; return; }
+  const sorted = [...lista].sort((a,b) => b.id - a.id);
+  box.innerHTML = sorted.map(g => {
+    const c = CATEGORIES[g.categoria] || CATEGORIES.outros;
+    return `<div class="gasto-item">
+      <div class="gasto-icon">${c.icon}</div>
+      <div class="gasto-info">
+        <div class="gasto-desc">${g.descricao}</div>
+        <div class="gasto-meta">${c.label} • ${g.data} ${g.hora}</div>
+      </div>
+      <div class="gasto-right">
+        <div class="gasto-val">R$ ${fmt(g.valor)}</div>
+        <button class="btn-remove" onclick="remover(${g.id})">remover</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showFeedback(msg, tipo) {
+  const box = document.getElementById('feedbackBox');
+  box.textContent = msg;
+  box.className = 'feedback ' + tipo;
+  box.style.display = 'block';
+  setTimeout(() => { box.style.display = 'none'; }, 3500);
+}
+
+async function analisarSMS() {
+  const txt = document.getElementById('smsInput').value.trim();
+  if (!txt) return;
+  const btn = document.getElementById('btnIA');
+  btn.textContent = 'Analisando com IA... ✨';
+  btn.disabled = true;
+  btn.className = 'btn btn-disabled';
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6', max_tokens: 1000,
+        system: `Você analisa notificações de gastos. Extraia valor, categoria (uber/comida/beleza/assinaturas/lazer/saude/compras/outros) e descrição curta. Responda APENAS JSON válido sem markdown: {"valor":0.00,"categoria":"","descricao":""}`,
+        messages: [{ role: 'user', content: txt }]
+      })
+    });
+    const data = await res.json();
+    const text = (data.content || []).map(i => i.text || '').join('');
+    const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
+    if (parsed.valor && parsed.categoria) {
+      const id = Date.now();
+      const now = new Date();
+      gastos[id] = { id, valor: parsed.valor, categoria: parsed.categoria, descricao: parsed.descricao, data: now.toLocaleDateString('pt-BR'), hora: now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) };
+      saveGastos();
+      document.getElementById('smsInput').value = '';
+      updateAll();
+      showFeedback(`✅ R$ ${fmt(parsed.valor)} registrado em ${CATEGORIES[parsed.categoria]?.label || parsed.categoria}`, 'ok');
+    } else { showFeedback('Não consegui identificar. Registre manualmente.', 'err'); }
+  } catch { showFeedback('Erro ao processar. Registre manualmente.', 'err'); }
+  btn.textContent = 'Registrar com IA 🤖';
+  btn.disabled = false;
+  btn.className = 'btn btn-purple';
+}
+
+function adicionarManual() {
+  const valorStr = document.getElementById('mValor').value.replace(',','.');
+  const valor = parseFloat(valorStr);
+  const desc = document.getElementById('mDesc').value.trim();
+  const cat = document.getElementById('mCat').value;
+  if (!valor || !desc) { showFeedback('Preencha valor e descrição.', 'err'); return; }
+  const id = Date.now();
+  const now = new Date();
+  gastos[id] = { id, valor, categoria: cat, descricao: desc, data: now.toLocaleDateString('pt-BR'), hora: now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) };
+  saveGastos();
+  document.getElementById('mValor').value = '';
+  document.getElementById('mDesc').value = '';
+  updateAll();
+  showFeedback(`✅ R$ ${fmt(valor)} registrado!`, 'ok');
+}
+
+function remover(id) {
+  delete gastos[id];
+  saveGastos();
+  updateAll();
+}
+
+function setTab(tab) {
+  ['registrar','resumo','historico'].forEach(t => {
+    document.getElementById('section-'+t).style.display = t === tab ? 'block' : 'none';
+    document.getElementById('tab-'+t).className = 'tab' + (t === tab ? ' active' : '');
+  });
+}
+
+// PWA Install
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').style.display = 'flex';
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') document.getElementById('installBanner').style.display = 'none';
+  deferredPrompt = null;
+});
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'gastos-v1';
+    self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(['.']))));
+    self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
+  `;
+  const blob = new Blob([swCode], {type:'application/javascript'});
+  const url = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url).catch(()=>{});
+}
+
+loadGastos();
+updateAll();
+</script>
+</body>
+</html>
